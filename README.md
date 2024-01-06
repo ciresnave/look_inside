@@ -1,57 +1,58 @@
 # look_inside
 
-Did you ever wonder how Rust sees your data type?
+This crate provides the `LookInside` custom derive macro that allows
+introspecting the fields of structs and enums at compile time.
 
-Now you can find out with one simple derive macro...
+It also provides modules for working with different types:
 
-But first, you need to add the look_inside crate to your dependencies in Cargo.toml:
+- `enums` - Provides functionality for enum types.
+- `fields` - Provides functionality for struct fields.
+- `structs` - Provides functionality for struct types.
+- `unions` - Provides functionality for union types.
 
-``` TOML
-[dependencies]
-look_inside = "0.1"
-```
+The `LookInside` macro generates an implementation of the `LookInside`
+trait which exposes the fields and variants in a structured way at
+compile time. This allows iterating and matching on fields and variants
+in macros.
 
-Then you simply derive `LookInside` on struct `struct`, `enum`, or `union` and compile.  `LookInside` will panic during compile and show you the full abstract syntax tree it breaks down into.  Want to know the AST for a type other than a `struct`, `enum`, or `union`?  No problem.  Use your type in a `struct`, `enum`, or `union`.
+Key items exported:
 
-Struct example:
+- `LookInside` - The custom derive macro.
+- `Ident`, `Type`, etc. - Re-exports of useful types from Syn.
+This crate provides a convenient way to introspect struct and enum fields at
+compile time using the `LookInside` custom derive macro.
+
+To use it to view the structure of your structs, enums, and unions, add
+`#[derive(LookInside)]` to your struct or enum definition. This will
+generate an implementation of the `LookInside` trait for that type, which exposes
+its fields and variants in a structured way in a panic message.
+
+For example:
 
 ``` Rust
-use look_inside::LookInside;
-
-#[Derive(LookInside)]
+#[derive(LookInside)]
 struct MyStruct {
-    oneThing: u8,
-    twoThing: String,
-    threeThing: Vec<u16>,
+    field1: u32,
+    field2: String,
 }
 ```
 
-Enum example:
+Alternatively, this crate also contains the code to take a DeriveInput from the
+syn crate and return structured representations of your types for use in your code.
+
+Here's a simple example of how to print the fields of a struct:
 
 ``` Rust
-use look_inside::LookInside;
+let my_struct = MyStruct { field1: 42, field2: "foo".to_string() };
 
-#[Derive(LookInside)]
-enum MyEnum {
-    variantOne(u8),
-    variantTwo(u16),
-    variantThree(MyStruct)
+// Access fields:
+let field1 = my_struct.look_inside().fields().field1;
+
+// Iterate fields:
+for field in my_struct.look_inside().fields() {
+    println!("{}", field.ident);
 }
 ```
 
-Union example:
-
-``` Rust
-use look_inside::LookInside;
-
-#[Derive(LookInside)]
-union MyUnion {
-    aU8: u8,
-    aU16: u16,
-    myStruct: MyStruct,
-}
-```
-
-For those who want to understand how this all works...look at lib.rs.  There is literally NOTHING to this.  
-
-If it's so simple, why did I make this crate?  Simple, I wanted to see inside MY types so I can make better derive macros.  Having this in a crate makes it easy to add it to any project I'm working on just long enough to inspect things and then remove it again.
+This provides a convenient way to introspect and process structs, unions,
+and enums generically in macros and procedural macros.

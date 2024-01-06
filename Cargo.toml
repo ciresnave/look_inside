@@ -1,12 +1,12 @@
 [package]
     authors       = ["Eric Evans <CireSnave@gmail.com>"]
-    description   = "Macros for look_inside"
+    description   = "Look inside structs, enums, and unions!"
     documentation = "https://docs.rs/look_inside"
     edition       = "2021"
     homepage      = "https://docs.rs/look_inside"
     license       = "MIT"
     name          = "look_inside"
-    readme        = "https://github.com/CireSnave/look_inside/README.md"
+    readme        = "README.md"
     repository    = "https://github.com/CireSnave/look_inside"
     version       = "0.2.1"
 
